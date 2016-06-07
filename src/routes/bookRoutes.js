@@ -1,58 +1,20 @@
 var express = require('express');
 var bookRouter = express.Router();
-var mongodb = require('mondodb').MondoClient;
-var objectId = require('mondodb').ObjectID;
+var mongodb = require('mongodb').MongoClient;
+var objectId = require('mongodb').ObjectID;
 
-var router = function(nav){
-    var books = [
-    {
-        title: 'War and Peace',
-        genre: 'Historical Fiction',
-        author: 'Lev',
-        read: false
-        
-    },
-    { 
-        title: 'Les Miserables',
-        genre: 'Historical Fiction',
-        author: 'Lev Nikolayevich Tolstoy',
-        read: false
-    
-    },
-        
-    
-];
+var router = function (nav) {
+    var bookService =
+        require('../services/goodreadsService')();
+    var bookController =
+        require('../controllers/bookController')(bookService, nav);
+    bookRouter.use(bookController.middleware);
+    bookRouter.route('/')
+        .get(bookController.getIndex);
+
     bookRouter.route('/:id')
-    .get(function (req, res) {
-        res.render('bookListView'), {
-                    title: 'Books',
-                    nav: [{
-                        Link: '/Books',
-                        Text: 'Books'
-                        }, {
-                        Link: '/Authors', 
-                        Text: 'Authors'
-                        }],
-                    books: books
-        };
-});
-    
-    bookRouter.route('/:id')
-    .get(function (req, res) {
-        var id = req .params.id;
-        res.render('booksView'), {
-                    title: 'Books',
-                    nav: [{
-                        Link: '/Books',
-                        Text: 'Books'
-                        }, {
-                        Link: '/Authors', 
-                        Text: 'Authors'
-                        }],
-                    books: books[id]
-        };
-});
+        .get(bookController.getById);
 
     return bookRouter;
-}   
+};
 module.exports = router;

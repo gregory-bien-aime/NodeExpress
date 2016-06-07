@@ -1,6 +1,6 @@
 var express = require('express');
 var authRouter = express.Router();
-var monngodb = require('mongodb').MongoClient;
+var mongodb = require('mongodb').MongoClient;
 var passport = require('passport');
 
 var router = function() {
@@ -18,7 +18,7 @@ var router = function() {
         
                 collection.insert(user,
                     function  (err, results) {
-                    req.login(results.ops[0], function(){
+                    req.login(results.ops[0], function () {
                         res.redirect('/auth/profile');
                     });
                 });
@@ -43,8 +43,7 @@ authRouter.route('/profile')
     .get(function (req, res) {
         res.json(req.user);
    });
-return authRouter;
-    
+  return authRouter;    
 };
 
 module.exports = router;
